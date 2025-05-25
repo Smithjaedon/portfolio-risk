@@ -36,11 +36,15 @@
 		isLoading = true;
 		try {
 			const res = await fetch(`/api/stocks?q=${encodeURIComponent(stock)}`);
+			const json = await res.json();
+
 			if (!res.ok) {
-				throw new Error(`Response status: ${res.status}`);
+				console.error('API Error:', json.error);
+				apiResults = [];
+				return;
 			}
 
-			const json = await res.json();
+			// Handle the response structure
 			apiResults = json.stocks || [];
 			console.log('API Results:', apiResults);
 		} catch (err) {
