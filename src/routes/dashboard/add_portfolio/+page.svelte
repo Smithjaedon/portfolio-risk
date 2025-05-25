@@ -44,9 +44,7 @@
 				return;
 			}
 
-			// Handle the response structure
 			apiResults = json.stocks || [];
-			console.log('API Results:', apiResults);
 		} catch (err) {
 			console.error('Error fetching stocks:', err);
 			apiResults = [];
