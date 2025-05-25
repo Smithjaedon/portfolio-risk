@@ -12,7 +12,7 @@
 		try {
 			const { error } = await data.supabase.auth.signOut();
 			if (error) throw error;
-			goto('/login');
+			await goto('login');
 		} catch (error) {
 			console.error('Error signing out:', error);
 		}
@@ -23,7 +23,7 @@
 	<Menubar.Root class="w-full">
 		<div class="flex w-full items-center justify-between p-3">
 			<div class="">
-				<h1 class="text-xl font-medium tracking-tight">Portfolio Risk</h1>
+				<h1 class="text-xl font-medium tracking-tight"><a href="/dashboard">Portfolio Risk</a></h1>
 			</div>
 			<div>
 				<Menubar.Menu>
