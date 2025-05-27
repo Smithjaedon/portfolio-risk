@@ -2,10 +2,12 @@
 	import type { PageData } from './$types';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { Trash2 } from 'lucide-svelte';
+	import { Input } from '$lib/components/ui/input/index.js';
 
 	let { data }: { data: PageData } = $props();
 
 	let apiSearch = $state<string>('');
+	let title = $state<string>('');
 	let apiResults = $state<Stock[]>([]);
 	let isLoading = $state<boolean>(false);
 
@@ -25,6 +27,31 @@
 
 	function removeSelection(delete_stock: Stock) {
 		selectedStocks = selectedStocks.filter((stock) => stock.symbol !== delete_stock.symbol);
+	}
+
+	async function createPortfolio() {
+		if (!title.trim() || selectedStocks.length === 0) {
+			return;
+		}
+		try {
+			const res = await fetch('/api/add_portfolio', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					title,
+					stocks: selectedStocks
+				})
+			});
+			const json = await res.json();
+			if (!res.ok) {
+				console.error('API Error:', json.error);
+				return;
+			}
+		} catch (err) {
+			console.error('error: ', err);
+		}
 	}
 
 	async function fetchStocks(stock: string) {
@@ -56,7 +83,13 @@
 
 <div class="mt-12 flex flex-col items-center justify-center">
 	<div class="w-full max-w-xl rounded-xl border border-neutral-200 bg-white p-8 shadow-lg">
-		<input
+		<Input
+			type="text"
+			placeholder="title..."
+			bind:value={title}
+			class="mb-4 w-full rounded-md border border-gray-300 px-4 py-2 text-base focus:border-blue-400 focus:outline-none"
+		/>
+		<Input
 			type="text"
 			placeholder="Search stocks via API..."
 			bind:value={apiSearch}
@@ -115,7 +148,7 @@
 		{/if}
 
 		<div class="mt-6 flex justify-center">
-			<Button class="w-32" disabled={selectedStocks.length === 0}>
+			<Button class="w-32" onclick={createPortfolio} disabled={selectedStocks.length === 0}>
 				Confirm ({selectedStocks.length})
 			</Button>
 		</div>

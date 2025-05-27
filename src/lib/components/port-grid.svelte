@@ -5,8 +5,6 @@
 	import Input from './ui/input/input.svelte';
 	import Separator from './ui/separator/separator.svelte';
 	import financeBlurbUrl from '$lib/images/financeBlurb.svg?url';
-	import * as Dialog from '$lib/components/ui/dialog';
-	import * as Command from '$lib/components/ui/command';
 
 	type Portfolio = {
 		name: string;
