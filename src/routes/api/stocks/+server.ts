@@ -23,16 +23,15 @@ export const GET: RequestHandler = async ({ url }) => {
 
 		const data = await response.json();
 
-		const stockPromises =
-			data.quotes?.map(async (quote: any) => ({
-				symbol: quote.symbol,
+		// Filter out options from the quotes array
+		const filteredQuotes = data.quotes?.filter((quote: any) => quote.quoteType !== 'OPTION') || [];
 
-				name: quote.shortname || quote.longname || 'N/A',
-
-				price: (await getPrice(quote.symbol)) || 0,
-
-				exchange: quote.exchange
-			})) || [];
+		const stockPromises = filteredQuotes.map(async (quote: any) => ({
+			symbol: quote.symbol,
+			name: quote.shortname || quote.longname || 'N/A',
+			price: (await getPrice(quote.symbol)) || 0,
+			exchange: quote.exchange
+		}));
 
 		const stocks = await Promise.all(stockPromises);
 
